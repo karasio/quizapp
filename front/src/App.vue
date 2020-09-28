@@ -4,9 +4,31 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
-    <router-view/>
+    <router-view :items="user"/>
   </div>
 </template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex';
+
+export default {
+  components: {},
+  computed: {
+    ...mapGetters([
+      'user',
+    ]),
+    data() {
+      return {
+        methods: {
+          ...mapActions([
+            'fillUser',
+          ]),
+        },
+      };
+    },
+  },
+};
+</script>
 
 <style>
 #app {
