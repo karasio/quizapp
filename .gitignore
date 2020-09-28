@@ -1,7 +1,9 @@
 .DS_Store
 node_modules
 /dist
-
+back/.env
+back/package-lock.json
+front/package-lock.json
 
 # local env files
 .env.local
