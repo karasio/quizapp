@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema({
   },
   highScore: {
     type: Number,
-    unique: true,
   },
 });
 userSchema.plugin(uniqueValidator);

@@ -40,7 +40,7 @@ export default {
   methods: {
     async getUsers() {
       const users = await userService.getAll();
-      console.log(users);
+      this.$store.commit('FILL_USERS', users);
     },
   },
 };

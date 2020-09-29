@@ -52,8 +52,9 @@
           :class="{ 'has-error': submitting && passwordConfirmError }"
         />
         <button>Sign up</button>
-        <p v-if="passwordError && submitting">Passwords don't match</p>
-        <p v-if="!passwordError && submitting">Registration ok</p>
+        <p v-if="passwordError && submitting">Passwords don't match / min length 8 characters</p>
+        <p v-if="usernameError && submitting">Username taken / min length 3 characters</p>
+        <p v-if="!passwordError && !usernameError && submitting">Registration ok</p>
       </form>
     </div>
     <div v-else>
@@ -74,7 +75,17 @@ export default {
   },
   computed: {
     passwordConfirmError() {
-      return this.newPassword !== this.newPasswordConfirm;
+      return this.newPassword !== this.newPasswordConfirm || this.newPassword.length < 8;
+    },
+    usernameTakenError() {
+      let nameFree = false;
+      this.$store.getters.users.forEach((user) => {
+        if (user.username === this.newUsername) {
+          nameFree = true;
+        }
+      });
+
+      return nameFree || this.newUsername.length < 3;
     },
   },
   data() {
@@ -87,7 +98,9 @@ export default {
       newPassword: null,
       newPasswordConfirm: null,
       passwordError: false,
+      usernameError: false,
       submitting: false,
+      success: true,
     };
   },
   methods: {
@@ -111,7 +124,6 @@ export default {
     },
     checkUser() {
       const loggedInUser = window.localStorage.getItem('loggedInUser');
-      console.log(window.localStorage.getItem('loggedInUser'));
       if (loggedInUser) {
         // check if client has stored user data
         this.localUser = JSON.parse(loggedInUser);
@@ -130,27 +142,49 @@ export default {
       window.localStorage.clear();
     },
     registerButtonPressed() {
-      console.log('trying to sign up');
       this.register = true;
     },
-    handleRegister() {
-      console.log('handle register');
+    async handleRegister() {
       this.submitting = true;
       this.clearStatus();
+
+      // check if username is available and if passwords match
+      if (this.usernameTakenError) {
+        this.usernameError = true;
+        return;
+      }
       if (this.passwordConfirmError) {
-        console.log('password error');
         this.passwordError = true;
         return;
       }
 
-      this.error = false;
+      // add user to database & other relevant locations
+      const user = await userService.create({
+        username: this.newUsername,
+        password: this.newPassword,
+      });
+      if (user) {
+        this.$store.commit('FILL_USER', user);
+        this.$store.commit('FILL_USERS', this.$store.getters.users.concat(user));
+        this.localUser = this.$store.getters.user;
+        userService.setToken(user.token);
+        window.localStorage.setItem('loggedInUser', JSON.stringify(user));
+      }
+
+      // set error booleans and input values to init values
+      this.passwordError = false;
+      this.usernameError = false;
       this.success = true;
       this.submitting = false;
       this.register = false;
+      this.newUsername = '';
+      this.newPassword = '';
+      this.newPasswordConfirm = '';
     },
     clearStatus() {
       this.success = false;
-      this.error = false;
+      this.passwordError = false;
+      this.usernameError = false;
     },
   },
 };
