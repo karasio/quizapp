@@ -39,7 +39,7 @@ const COLOR_CODES = {
   },
 };
 
-const TIME_LIMIT = 20;
+const TIME_LIMIT = 10;
 
 export default {
   data() {
@@ -102,11 +102,13 @@ export default {
   methods: {
     onTimesUp() {
       clearInterval(this.timerInterval);
+      this.$store.commit('TOGGLE_GAMEON', false);
     },
 
     startTimer() {
       // eslint-disable-next-line no-return-assign
       this.timerInterval = setInterval(() => (this.timePassed += 1), 1000);
+      this.$store.commit('TOGGLE_GAMEON', true);
     },
   },
 };

@@ -22,6 +22,7 @@ export default {
     ...mapGetters([
       'user',
       'users',
+      'gameOn',
     ]),
   },
   data() {
@@ -30,6 +31,7 @@ export default {
         ...mapActions([
           'fillUser',
           'fillUsers',
+          'toggleGameOn',
         ]),
       },
     };

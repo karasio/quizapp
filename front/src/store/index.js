@@ -10,10 +10,12 @@ export default new Vuex.Store({
       password: '',
     },
     users: [],
+    gameOn: true,
   },
   getters: {
     user: (state) => state.user,
     users: (state) => state.users,
+    gameOn: (state) => state.gameOn,
   },
   mutations: {
     FILL_USER(state, user) {
@@ -22,6 +24,9 @@ export default new Vuex.Store({
     FILL_USERS(state, users) {
       state.users = users;
     },
+    TOGGLE_GAMEON(state, gameOn) {
+      state.gameOn = gameOn;
+    },
   },
   actions: {
     fillUser(ctx, user) {
@@ -29,6 +34,9 @@ export default new Vuex.Store({
     },
     fillUsers(ctx, users) {
       ctx.commit('FILL_USERS', users);
+    },
+    toggleGameOn(ctx, gameOn) {
+      ctx.commit('TOGGLE_GAMEON', gameOn);
     },
   },
   modules: {
