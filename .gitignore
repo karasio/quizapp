@@ -6,6 +6,7 @@ back/package-lock.json
 front/package-lock.json
 
 # local env files
+.env
 .env.local
 .env.*.local
 
