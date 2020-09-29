@@ -23,16 +23,16 @@ export default {
       'user',
       'users',
     ]),
-    data() {
-      return {
-        methods: {
-          ...mapActions([
-            'fillUser',
-            'fillUsers',
-          ]),
-        },
-      };
-    },
+  },
+  data() {
+    return {
+      methods: {
+        ...mapActions([
+          'fillUser',
+          'fillUsers',
+        ]),
+      },
+    };
   },
   mounted() {
     this.getUsers();
