@@ -40,16 +40,16 @@ export default {
     };
   },
   computed: mapState(['gameOn', 'user']),
-  watch: {
-    gameOn(newValue, oldValue) {
-      console.log(`Upda ting from ${oldValue} to ${newValue}`);
-
-      // Do whatever makes sense now
-      if (newValue === false) {
-        console.log('rerender should happen');
-      }
-    },
-  },
+  // watch: {
+  //   gameOn(newValue, oldValue) {
+  //     console.log(`Upda ting from ${oldValue} to ${newValue}`);
+  //
+  //     // Do whatever makes sense now
+  //     if (newValue === false) {
+  //       console.log('rerender should happen');
+  //     }
+  //   },
+  // },
   methods: {
     handleStart() {
       this.startGame = true;

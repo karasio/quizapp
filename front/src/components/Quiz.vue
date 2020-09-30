@@ -4,8 +4,11 @@
     <h2>{{decodeHtml(this.content.results[0].question)}}</h2>
     <div class="btn-group-vertical">
       <b-button style="margin: 10px 0 10px 0"
-                v-for="answer in answers" :key="answer" v-on:click="handleAnswerButton">
-        {{decodeHtml(answer)}}
+                v-for="answer in answers"
+                :key="answer.answer"
+                v-bind:style='{"background-color" : (isAnswered ? answer.color : "" )}'
+                v-on:click="handleAnswerButton">
+        {{decodeHtml(answer.answer)}}
       </b-button>
     </div>
     <div>
@@ -15,14 +18,17 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Quiz',
   data() {
     return {
-      content: Array,
-      answers: Array,
+      content: [],
+      answers: [],
+      quizToken: '',
+      answered: false,
+      buttonColor: '',
     };
   },
   methods: {
@@ -32,18 +38,23 @@ export default {
       return txt.value;
     },
     handleAnswerButton(event) {
+      this.answered = true;
       console.log(event);
-      if (event.target.innerText === this.content.results[0].correct_answer) {
-        console.log('Oikea vastaus');
-        this.$store.commit('INCREMENT_POINTS', 1);
-        this.fetchQuestion();
-      } else {
-        console.log('Väärä vastaus');
-        this.$store.commit('RESET_POINTS');
-        this.$store.commit('TOGGLE_GAMEON', false);
-      }
+      setTimeout(() => {
+        if (event.target.innerText === this.content.results[0].correct_answer) {
+          console.log('Oikea vastaus');
+          this.$store.commit('INCREMENT_POINTS', 1);
+          this.fetchQuestion();
+        } else {
+          console.log('Väärä vastaus');
+          this.$store.commit('RESET_POINTS');
+          this.$store.commit('TOGGLE_GAMEON', false);
+        }
+        this.answered = false;
+      }, 1000);
     },
     fetchQuestion() {
+      this.answers = [];
       const myHeaders = new Headers();
       myHeaders.append('Cookie', 'PHPSESSID=0ed9a39e9f8b1f8b4671ad784fcd582b');
 
@@ -52,18 +63,70 @@ export default {
         headers: myHeaders,
         redirect: 'manual',
       };
-      fetch('https://opentdb.com/api.php?amount=1&category=18',
+
+      fetch(`https://opentdb.com/api.php?amount=1&category=18&token=${this.quizToken}`,
         requestOptions).then((response) => response.json()).then((result) => {
         this.content = result;
-        this.answers = this.content.results[0].incorrect_answers;
-        this.answers.push(this.content.results[0].correct_answer);
+        // this.answers = this.content.results[0].incorrect_answers;
+        // this.answers.push(this.content.results[0].correct_answer);
+        this.answers.push({ answer: this.content.results[0].correct_answer, color: 'green' });
+        result.results[0].incorrect_answers.forEach((a) => {
+          this.answers.push({ answer: a, color: 'red' });
+        });
+
+        this.answers = this.shuffle(this.answers);
       }).catch((error) => console.log('error', error));
+    },
+    fetchToken() {
+      const myHeaders = new Headers();
+      myHeaders.append('Cookie', 'PHPSESSID=1028e387ad697116ceb4522b69da18ab');
+
+      const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow',
+      };
+
+      fetch('https://opentdb.com/api_token.php?command=request', requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result);
+          this.quizToken = result.token;
+          this.fetchQuestion();
+        })
+        .catch((error) => console.log('error', error));
+    },
+    shuffle(array) {
+      let currentIndex = array.length;
+      let temporaryValue;
+      let randomIndex;
+
+      // While there remain elements to shuffle...
+      while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        // eslint-disable-next-line no-param-reassign
+        array[currentIndex] = array[randomIndex];
+        // eslint-disable-next-line no-param-reassign
+        array[randomIndex] = temporaryValue;
+      }
+
+      return array;
     },
   },
   mounted() {
-    this.fetchQuestion();
+    this.fetchToken.call(this);
   },
-  computed: mapState(['gameOn', 'user', 'points']),
+  computed: {
+    ...mapGetters(['gameOn', 'user', 'points']),
+    isAnswered() {
+      return this.answered;
+    },
+  },
 };
 </script>
 
