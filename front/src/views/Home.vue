@@ -8,6 +8,8 @@
         </div>
         <div v-else>
           <h3>Game ended!</h3>
+          <p>Play again?</p>
+          <button v-on:click="handleStart">Start game</button>
         </div>
       </div>
       <div v-else>
@@ -51,6 +53,7 @@ export default {
   methods: {
     handleStart() {
       this.startGame = true;
+      this.$store.commit('TOGGLE_GAMEON', true);
     },
   },
 };
