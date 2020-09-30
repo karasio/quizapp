@@ -3,28 +3,46 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
+      <LoginForm></LoginForm>
     </div>
-    <router-view :items="user"/>
+    <router-view/>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import userService from './services/users';
+import LoginForm from './components/LoginForm.vue';
 
 export default {
-  components: {},
+  components: {
+    LoginForm,
+  },
   computed: {
     ...mapGetters([
       'user',
+      'users',
+      'gameOn',
     ]),
-    data() {
-      return {
-        methods: {
-          ...mapActions([
-            'fillUser',
-          ]),
-        },
-      };
+  },
+  data() {
+    return {
+      methods: {
+        ...mapActions([
+          'fillUser',
+          'fillUsers',
+          'toggleGameOn',
+        ]),
+      },
+    };
+  },
+  mounted() {
+    this.getUsers();
+  },
+  methods: {
+    async getUsers() {
+      const users = await userService.getAll();
+      this.$store.commit('FILL_USERS', users);
     },
   },
 };
@@ -37,6 +55,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  width: 90%;
 }
 
 #nav {

@@ -1,13 +1,13 @@
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
-const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator')
-mongoose.set('useFindAndModify', false)
+mongoose.set('useFindAndModify', false);
 
-const url = process.env.MONGODB_URI
+const url = process.env.MONGODB_URI;
 
-mongoose.connect(url, { useNewUrlParser: true }).catch(function (error) {
-  console.log(error)
-})
+mongoose.connect(url, { useNewUrlParser: true }).catch((error) => {
+  console.log(error);
+});
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -18,23 +18,22 @@ const userSchema = new mongoose.Schema({
   },
   pwHash: {
     type: String,
-    required: true,
     unique: true,
     minlength: 8,
   },
   highScore: {
     type: Number,
-    unique: true,
   },
-})
-userSchema.plugin(uniqueValidator)
+});
+userSchema.plugin(uniqueValidator);
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+    // delete returnedObject.pwHash;
+  },
+});
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('User', userSchema);
