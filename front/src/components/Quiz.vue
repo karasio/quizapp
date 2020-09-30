@@ -21,6 +21,7 @@ export default {
   data() {
     return {
       content: Array,
+      answers: Array,
     };
   },
   methods: {
@@ -39,10 +40,11 @@ export default {
       headers: myHeaders,
       redirect: 'manual',
     };
-    fetch('https://opentdb.com/api.php?amount=10&category=18',
+    fetch('https://opentdb.com/api.php?amount=1&category=18',
       requestOptions).then((response) => response.json()).then((result) => {
-      console.log(result);
       this.content = result;
+      this.answers = this.content.results[0].incorrect_answers;
+      this.answers.push(this.content.results[0].correct_answer);
     }).catch((error) => console.log('error', error));
   },
 };
