@@ -22,17 +22,19 @@ export default {
     ...mapGetters([
       'user',
       'users',
+      'gameOn',
     ]),
-    data() {
-      return {
-        methods: {
-          ...mapActions([
-            'fillUser',
-            'fillUsers',
-          ]),
-        },
-      };
-    },
+  },
+  data() {
+    return {
+      methods: {
+        ...mapActions([
+          'fillUser',
+          'fillUsers',
+          'toggleGameOn',
+        ]),
+      },
+    };
   },
   mounted() {
     this.getUsers();
