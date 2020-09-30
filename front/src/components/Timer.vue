@@ -21,6 +21,7 @@
 </template>
 
 <script>
+// src: https://medium.com/js-dojo/how-to-create-an-animated-countdown-timer-with-vue-89738903823f
 const FULL_DASH_ARRAY = 283;
 const WARNING_THRESHOLD = 10;
 const ALERT_THRESHOLD = 5;

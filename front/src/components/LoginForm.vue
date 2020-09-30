@@ -140,6 +140,7 @@ export default {
       };
       this.$store.commit('FILL_USER', this.localUser);
       window.localStorage.clear();
+      this.$store.commit('TOGGLE_GAMEON', true);
     },
     registerButtonPressed() {
       this.register = true;
