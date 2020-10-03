@@ -52,6 +52,7 @@ export default {
   // },
   methods: {
     handleStart() {
+      this.$store.commit('RESET_POINTS');
       this.startGame = true;
       this.$store.commit('TOGGLE_GAMEON', true);
     },

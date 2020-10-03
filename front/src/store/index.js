@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import userService from '../services/users';
 
 Vue.use(Vuex);
 
@@ -28,6 +29,20 @@ export default new Vuex.Store({
     },
     TOGGLE_GAMEON(state, gameOn) {
       state.gameOn = gameOn;
+      console.log(`TOOGLE_GAMEON kutsuttu ${state.gameOn}`);
+      if (state.gameOn === false) {
+        console.log('gameon == false');
+        console.log(state.points, state.user.highScore);
+        if (state.points > state.user.highScore) {
+          console.log('points > highScore');
+          state.user.highScore = state.points;
+          userService.update(state.user.id, state.user);
+          userService.getAll().then(
+            // eslint-disable-next-line no-return-assign
+            (response) => state.users = response,
+          );
+        }
+      }
     },
     INCREMENT_POINTS(state, n) {
       state.points += n;

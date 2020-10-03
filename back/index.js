@@ -58,7 +58,6 @@ app.put('/api/users/:id', (req, res) => {
 
   const user = {
     username: body.username,
-    pwHash: body.pwHash,
     highScore: body.highScore,
   };
 
@@ -153,7 +152,9 @@ app.post('/api/login', async (request, response) => {
 
   response
     .status(200)
-    .send({ token, username: user.username, highScore: user.highScore });
+    .send({
+      id: user.id, token, username: user.username, highScore: user.highScore,
+    });
 });
 
 const unknownEndpoint = (req, res) => {
