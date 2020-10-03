@@ -47,7 +47,7 @@ export default {
           this.fetchQuestion();
         } else {
           console.log('Väärä vastaus');
-          this.$store.commit('RESET_POINTS');
+          console.log(`PISTEEEEEETT ${this.points} ${this.user.highScore}`);
           this.$store.commit('TOGGLE_GAMEON', false);
         }
         this.answered = false;
@@ -74,7 +74,7 @@ export default {
           this.answers.push({ answer: a, color: 'red' });
         });
 
-        this.answers = this.shuffle(this.answers);
+        // this.answers = this.shuffle(this.answers);
       }).catch((error) => console.log('error', error));
     },
     fetchToken() {
