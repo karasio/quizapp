@@ -24,6 +24,7 @@ export default {
       'user',
       'users',
       'gameOn',
+      'points',
     ]),
   },
   data() {

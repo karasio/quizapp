@@ -29,19 +29,16 @@ export default new Vuex.Store({
     },
     TOGGLE_GAMEON(state, gameOn) {
       state.gameOn = gameOn;
-      console.log(`TOOGLE_GAMEON kutsuttu ${state.gameOn}`);
-      if (state.gameOn === false) {
-        console.log('gameon == false');
-        console.log(state.points, state.user.highScore);
-        if (state.points > state.user.highScore) {
-          console.log('points > highScore');
-          state.user.highScore = state.points;
-          userService.update(state.user.id, state.user);
-          userService.getAll().then(
-            // eslint-disable-next-line no-return-assign
-            (response) => state.users = response,
-          );
-        }
+      if (state.gameOn === false && state.points > state.user.highScore) {
+        userService
+          .update(state.user.id, { ...state.user, highScore: state.points })
+          .then((response) => {
+            state.user = response;
+            userService.getAll()
+              .then((res) => {
+                state.users = res;
+              });
+          });
       }
     },
     INCREMENT_POINTS(state, n) {

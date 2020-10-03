@@ -28,14 +28,12 @@ const get = (id) => {
 };
 
 const create = (newObject) => {
-  console.log(newObject);
   // eslint-disable-next-line no-param-reassign
   newObject.highScore = 0;
   const config = {
     headers: { Authorization: token },
   };
   const request = axios.post(baseUrl, newObject, config);
-  console.log(request);
   return request.then((response) => response.data);
 };
 

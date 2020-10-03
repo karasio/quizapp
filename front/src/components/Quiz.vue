@@ -1,7 +1,7 @@
 <template>
   <div>
     Quiz
-    <h2>{{decodeHtml(this.content.results[0].question)}}</h2>
+    <h2 v-if="this.content.length !== 0 ">{{decodeHtml(this.content.results[0].question)}}</h2>
     <div class="btn-group-vertical">
       <b-button style="margin: 10px 0 10px 0"
                 v-for="answer in answers"
@@ -39,15 +39,11 @@ export default {
     },
     handleAnswerButton(event) {
       this.answered = true;
-      console.log(event);
       setTimeout(() => {
-        if (event.target.innerText === this.content.results[0].correct_answer) {
-          console.log('Oikea vastaus');
+        if (event.target.innerText === this.decodeHtml(this.content.results[0].correct_answer)) {
           this.$store.commit('INCREMENT_POINTS', 1);
           this.fetchQuestion();
         } else {
-          console.log('Väärä vastaus');
-          console.log(`PISTEEEEEETT ${this.points} ${this.user.highScore}`);
           this.$store.commit('TOGGLE_GAMEON', false);
         }
         this.answered = false;
@@ -55,20 +51,15 @@ export default {
     },
     fetchQuestion() {
       this.answers = [];
-      const myHeaders = new Headers();
-      myHeaders.append('Cookie', 'PHPSESSID=0ed9a39e9f8b1f8b4671ad784fcd582b');
 
       const requestOptions = {
         method: 'GET',
-        headers: myHeaders,
         redirect: 'manual',
       };
 
       fetch(`https://opentdb.com/api.php?amount=1&category=18&token=${this.quizToken}`,
         requestOptions).then((response) => response.json()).then((result) => {
         this.content = result;
-        // this.answers = this.content.results[0].incorrect_answers;
-        // this.answers.push(this.content.results[0].correct_answer);
         this.answers.push({ answer: this.content.results[0].correct_answer, color: 'green' });
         result.results[0].incorrect_answers.forEach((a) => {
           this.answers.push({ answer: a, color: 'red' });
@@ -78,12 +69,9 @@ export default {
       }).catch((error) => console.log('error', error));
     },
     fetchToken() {
-      const myHeaders = new Headers();
-      myHeaders.append('Cookie', 'PHPSESSID=1028e387ad697116ceb4522b69da18ab');
-
       const requestOptions = {
         method: 'GET',
-        headers: myHeaders,
+        // headers: myHeaders,
         redirect: 'follow',
       };
 

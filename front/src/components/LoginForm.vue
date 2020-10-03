@@ -19,6 +19,7 @@
           placeholder="password"
         />
         <button id="loginButton" class="row-cols-md-2">Log in</button>
+        <p v-if="loginProblem">Wrong username or password</p>
       </form>
       <button
         id="registerButton"
@@ -101,6 +102,7 @@ export default {
       usernameError: false,
       submitting: false,
       success: true,
+      loginProblem: false,
     };
   },
   methods: {
@@ -118,8 +120,10 @@ export default {
         this.localUser = this.$store.getters.user;
         this.username = '';
         this.password = '';
+        this.loginProblem = false;
       } catch (e) {
         console.log('Invalid username or password');
+        this.loginProblem = true;
       }
     },
     checkUser() {
