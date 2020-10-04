@@ -7,7 +7,8 @@
           <Quiz class="col-md-6" msg ="Quiz" />
         </div>
         <div v-else>
-          <h3>Game ended!</h3>
+          <h3>Game ended! Final Score: {{ this.$store.getters.points }}</h3>
+
           <p>Play again?</p>
           <button v-on:click="handleStart">Start game</button>
         </div>
@@ -59,3 +60,11 @@ export default {
   },
 };
 </script>
+<style>
+  @media (max-width:775px) {
+    .col-md-3 {
+      margin-left: auto;
+      margin-right:auto;
+    }
+  }
+</style>
