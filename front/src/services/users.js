@@ -5,7 +5,7 @@ import axios from 'axios';
  * @type {string}
  */
 
-const baseUrl = 'http://localhost:3000/api/users';
+const baseUrl = '/api/users';
 
 let token = null;
 

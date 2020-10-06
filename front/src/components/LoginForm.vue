@@ -3,7 +3,7 @@
     <div v-if="this.user.username === ''  && !this.register">
       <form @submit.prevent="handleLogin">
         <input
-          class="row-cols-md-3"
+          class="row-cols-md-3 inputz"
           id="username"
           type="text"
           ref="username"
@@ -11,26 +11,26 @@
           placeholder="username"
         />
         <input
-          class="row-cols-md-3"
+          class="row-cols-md-3 inputz"
           id="password"
           type="password"
           ref="password"
           v-model="password"
           placeholder="password"
         />
-        <button id="loginButton" class="row-cols-md-2">Log in</button>
+        <button id="loginButton" class="row-cols-md-2 inputz">Log in</button>
         <p v-if="loginProblem">Wrong username or password</p>
       </form>
       <button
         id="registerButton"
-        class="row-cols-md-2"
+        class="row-cols-md-2 inputz"
         v-on:click="registerButtonPressed"
       >Register</button>
     </div>
     <div v-else-if="this.register === true">
       <form @submit.prevent="handleRegister">
         <input
-          class="row-cols-md-3"
+          class="row-cols-md-3 inputz"
           id="newUsername"
           type="text"
           ref="newUsername"
@@ -38,21 +38,21 @@
           placeholder="username"
         />
         <input
-          class="row-cols-md-3"
+          class="row-cols-md-3 inputz"
           v-model="newPassword"
           type="password"
           ref="newPassword"
           placeholder="password"
         />
         <input
-          class="row-cols-md-3"
+          class="row-cols-md-3 inputz"
           v-model="newPasswordConfirm"
           type="password"
           ref="newPasswordConfirm"
           placeholder="confirm password"
           :class="{ 'has-error': submitting && passwordConfirmError }"
         />
-        <button>Sign up</button>
+        <button class="inputz">Sign up</button>
         <p v-if="passwordError && submitting">Passwords don't match / min length 8 characters</p>
         <p v-if="usernameError && submitting">Username taken / min length 3 characters</p>
         <p v-if="!passwordError && !usernameError && submitting">Registration ok</p>
@@ -61,7 +61,7 @@
     </div>
     <div v-else>
       <h3 >Hello {{ user.username }}</h3>
-      <button v-on:click="handleLogout">Sign out</button>
+      <button class="inputz" v-on:click="handleLogout">Sign out</button>
     </div>
   </div>
 </template>
@@ -117,7 +117,7 @@ export default {
       try {
         const user = await loginService.login(temp);
         userService.setToken(user.token);
-        delete user.token;
+        // delete user.token;
         window.localStorage.setItem('loggedInUser', JSON.stringify(user));
         this.fillUser(user);
         this.username = '';
@@ -130,7 +130,6 @@ export default {
     },
     checkUser() {
       const loggedInUser = JSON.parse(window.localStorage.getItem('loggedInUser'));
-      // loginService.login()
       if (loggedInUser) {
         // check if client has stored user data
         this.fillUser(loggedInUser);
@@ -168,11 +167,12 @@ export default {
         password: this.newPassword,
       });
       if (tempUser) {
-        userService.setToken(tempUser.token);
-        delete tempUser.token;
-        this.fillUser(tempUser);
+        console.log(tempUser);
+        const loggedInUser = await loginService.login(tempUser);
+        userService.setToken(loggedInUser.token);
+        this.fillUser(loggedInUser);
         this.fillUsers(this.users.concat(tempUser));
-        window.localStorage.setItem('loggedInUser', JSON.stringify(tempUser));
+        window.localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
       }
 
       // set error booleans and input values to init values
@@ -213,6 +213,9 @@ export default {
 </script>
 
 <style>
+  .inputz {
+    margin: 0.2rem;
+  }
 
   form {
     width: 100%;

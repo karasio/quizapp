@@ -5,7 +5,7 @@ import axios from 'axios';
  * @type {string}
  */
 
-const baseUrl = 'http://localhost:3000/api/login';
+const baseUrl = '/api/login';
 
 const login = async (credentials) => {
   // console.log('login.js',credentials);
