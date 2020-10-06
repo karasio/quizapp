@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="this.localUser.username === ''  && !this.register">
+    <div v-if="this.user.username === ''  && !this.register">
       <form @submit.prevent="handleLogin">
         <input
           class="row-cols-md-3"
@@ -56,16 +56,18 @@
         <p v-if="passwordError && submitting">Passwords don't match / min length 8 characters</p>
         <p v-if="usernameError && submitting">Username taken / min length 3 characters</p>
         <p v-if="!passwordError && !usernameError && submitting">Registration ok</p>
+        <button @click.prevent="cancelRegister">Cancel</button>
       </form>
     </div>
     <div v-else>
-      <h3 >Hello {{ localUser.username }}</h3>
+      <h3 >Hello {{ user.username }}</h3>
       <button v-on:click="handleLogout">Sign out</button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import userService from '../services/users';
 import loginService from '../services/login';
 
@@ -80,7 +82,7 @@ export default {
     },
     usernameTakenError() {
       let nameFree = false;
-      this.$store.getters.users.forEach((user) => {
+      this.users.forEach((user) => {
         if (user.username === this.newUsername) {
           nameFree = true;
         }
@@ -88,12 +90,12 @@ export default {
 
       return nameFree || this.newUsername.length < 3;
     },
+    ...mapGetters(['user', 'users']),
   },
   data() {
     return {
       username: null,
       password: null,
-      localUser: {},
       register: false,
       newUsername: null,
       newPassword: null,
@@ -115,9 +117,8 @@ export default {
       try {
         const user = await loginService.login(temp);
         window.localStorage.setItem('loggedInUser', JSON.stringify(user));
-        this.$store.commit('FILL_USER', user);
+        this.fillUser(user);
         userService.setToken(user.token);
-        this.localUser = this.$store.getters.user;
         this.username = '';
         this.password = '';
         this.loginProblem = false;
@@ -127,24 +128,21 @@ export default {
       }
     },
     checkUser() {
-      const loggedInUser = window.localStorage.getItem('loggedInUser');
+      const loggedInUser = JSON.parse(window.localStorage.getItem('loggedInUser'));
+      // loginService.login()
       if (loggedInUser) {
         // check if client has stored user data
-        this.localUser = JSON.parse(loggedInUser);
-        this.$store.commit('FILL_USER', this.localUser);
-      } else {
-        // if no one is logged in, use empty user from store
-        this.localUser = this.$store.getters.user;
+        this.fillUser(loggedInUser);
+        userService.setToken(loggedInUser.token);
       }
     },
     handleLogout() {
-      this.localUser = {
+      this.fillUser({
         username: '',
         password: '',
-      };
-      this.$store.commit('FILL_USER', this.localUser);
+      });
       window.localStorage.clear();
-      this.$store.commit('TOGGLE_GAMEON', true);
+      this.toggleGameOn(true);
     },
     registerButtonPressed() {
       this.register = true;
@@ -164,16 +162,15 @@ export default {
       }
 
       // add user to database & other relevant locations
-      const user = await userService.create({
+      const tempUser = await userService.create({
         username: this.newUsername,
         password: this.newPassword,
       });
-      if (user) {
-        this.$store.commit('FILL_USER', user);
-        this.$store.commit('FILL_USERS', this.$store.getters.users.concat(user));
-        this.localUser = this.$store.getters.user;
-        userService.setToken(user.token);
-        window.localStorage.setItem('loggedInUser', JSON.stringify(user));
+      if (tempUser) {
+        this.fillUser(tempUser);
+        this.fillUsers(this.users.concat(tempUser));
+        userService.setToken(tempUser.token);
+        window.localStorage.setItem('loggedInUser', JSON.stringify(tempUser));
       }
 
       // set error booleans and input values to init values
@@ -185,11 +182,28 @@ export default {
       this.newUsername = '';
       this.newPassword = '';
       this.newPasswordConfirm = '';
+      this.register = false;
     },
     clearStatus() {
       this.success = false;
       this.passwordError = false;
       this.usernameError = false;
+    },
+    ...mapActions([
+      'fillUser', 'fillUsers', 'toggleGameOn',
+    ]),
+    cancelRegister() {
+      this.username = null;
+      this.password = null;
+      this.register = false;
+      this.newUsername = null;
+      this.newPassword = null;
+      this.newPasswordConfirm = null;
+      this.passwordError = false;
+      this.usernameError = false;
+      this.submitting = false;
+      this.success = true;
+      this.loginProblem = false;
     },
   },
 };

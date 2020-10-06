@@ -25,27 +25,42 @@ export default {
       'users',
       'gameOn',
       'points',
+      'categories',
     ]),
   },
   data() {
     return {
-      methods: {
-        ...mapActions([
-          'fillUser',
-          'fillUsers',
-          'toggleGameOn',
-        ]),
-      },
     };
   },
   mounted() {
     this.getUsers();
+    this.getCategories();
   },
   methods: {
     async getUsers() {
       const users = await userService.getAll();
-      this.$store.commit('FILL_USERS', users);
+      this.fillUsers(users);
     },
+    async getCategories() {
+      // https://opentdb.com/api_category.php
+      const requestOptions = {
+        method: 'GET',
+        redirect: 'manual',
+      };
+
+      fetch('https://opentdb.com/api_category.php', requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          this.fillCategories(result.trivia_categories);
+        })
+        .catch((error) => console.log('error', error));
+    },
+    ...mapActions([
+      'fillUser',
+      'fillUsers',
+      'toggleGameOn',
+      'fillCategories',
+    ]),
   },
 };
 </script>

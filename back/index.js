@@ -36,7 +36,7 @@ app.get('/api/users/:id', (req, res, next) => {
   User.findById(req.params.id)
     .then((person) => {
       if (person) {
-        res.json(person.toJSON());
+        res.json({ id: person.id, username: person.username, highscore: person.highScore });
       } else {
         console.log('No content found with given ID ', req.params.id);
         res.status(404).end();
@@ -55,6 +55,10 @@ app.delete('/api/users/:id', (req, res, next) => {
 
 app.put('/api/users/:id', (req, res) => {
   const { body } = req;
+  const decodedToken = jwt.verify(body.token, process.env.SECRET);
+  if (!body.token || !decodedToken.id) {
+    return res.status(401).json({ error: 'token missing or invalid' });
+  }
 
   const user = {
     username: body.username,
@@ -63,7 +67,11 @@ app.put('/api/users/:id', (req, res) => {
 
   User.findByIdAndUpdate(req.params.id, user, { new: true })
     .then((updatedPerson) => {
-      res.json(updatedPerson.toJSON());
+      res.json({
+        id: updatedPerson.id,
+        username: updatedPerson.username,
+        highScore: updatedPerson.highScore,
+      });
     })
     .catch(() => res.status(404).send({ error: 'Unknown endpoint' }));
 });
@@ -88,7 +96,7 @@ app.post('/api/users', async (req, res, next) => {
   console.log('Attempt to POST: ', user);
 
   user.save().then((savedUser) => {
-    res.json(savedUser.toJSON());
+    res.json({ id: savedUser.id, username: savedUser.username, highScore: savedUser.highScore });
   }).catch((error) => next(error));
 });
 
@@ -115,7 +123,7 @@ app.post('/api/login', async (request, response) => {
     id: user._id,
   };
 
-  const token = jwt.sign(userForToken, process.env.SECRET);
+  const token = jwt.sign(userForToken, process.env.SECRET, {expiresIn: '12h'});
   //  console.log('tokeni', token);
 
   response

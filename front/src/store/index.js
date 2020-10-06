@@ -13,12 +13,17 @@ export default new Vuex.Store({
     users: [],
     gameOn: true,
     points: 0,
+    category: { id: 18, name: 'Science: Computers' },
+    categories: [],
   },
   getters: {
     user: (state) => state.user,
     users: (state) => state.users,
     gameOn: (state) => state.gameOn,
     points: (state) => state.points,
+    category: (state) => state.category,
+    categories: (state) => state.categories,
+
   },
   mutations: {
     FILL_USER(state, user) {
@@ -47,6 +52,12 @@ export default new Vuex.Store({
     RESET_POINTS(state) {
       state.points = 0;
     },
+    FILL_CATEGORY(state, category) {
+      state.category = category;
+    },
+    FILL_CATEGORIES(state, categories) {
+      state.categories = categories;
+    },
   },
   actions: {
     fillUser(ctx, user) {
@@ -57,6 +68,12 @@ export default new Vuex.Store({
     },
     toggleGameOn(ctx, gameOn) {
       ctx.commit('TOGGLE_GAMEON', gameOn);
+    },
+    fillCategory(ctx, category) {
+      ctx.commit('FILL_CATEGORY', category);
+    },
+    fillCategories(ctx, categories) {
+      ctx.commit('FILL_CATEGORIES', categories);
     },
   },
   modules: {

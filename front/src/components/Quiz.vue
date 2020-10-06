@@ -57,7 +57,7 @@ export default {
         redirect: 'manual',
       };
 
-      fetch(`https://opentdb.com/api.php?amount=1&category=18&token=${this.quizToken}`,
+      fetch(`https://opentdb.com/api.php?amount=1&category=${this.category.id}&token=${this.quizToken}`,
         requestOptions).then((response) => response.json()).then((result) => {
         this.content = result;
         this.answers.push({ answer: this.content.results[0].correct_answer, color: 'green' });
@@ -65,7 +65,7 @@ export default {
           this.answers.push({ answer: a, color: 'red' });
         });
 
-        // this.answers = this.shuffle(this.answers);
+        this.answers = this.shuffle(this.answers);
       }).catch((error) => console.log('error', error));
     },
     fetchToken() {
@@ -78,7 +78,6 @@ export default {
       fetch('https://opentdb.com/api_token.php?command=request', requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          console.log(result);
           this.quizToken = result.token;
           this.fetchQuestion();
         })
@@ -110,7 +109,7 @@ export default {
     this.fetchToken.call(this);
   },
   computed: {
-    ...mapGetters(['gameOn', 'user', 'points']),
+    ...mapGetters(['gameOn', 'user', 'points', 'category']),
     isAnswered() {
       return this.answered;
     },
