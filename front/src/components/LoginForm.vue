@@ -116,9 +116,10 @@ export default {
 
       try {
         const user = await loginService.login(temp);
+        userService.setToken(user.token);
+        delete user.token;
         window.localStorage.setItem('loggedInUser', JSON.stringify(user));
         this.fillUser(user);
-        userService.setToken(user.token);
         this.username = '';
         this.password = '';
         this.loginProblem = false;
@@ -167,9 +168,10 @@ export default {
         password: this.newPassword,
       });
       if (tempUser) {
+        userService.setToken(tempUser.token);
+        delete tempUser.token;
         this.fillUser(tempUser);
         this.fillUsers(this.users.concat(tempUser));
-        userService.setToken(tempUser.token);
         window.localStorage.setItem('loggedInUser', JSON.stringify(tempUser));
       }
 

@@ -46,6 +46,18 @@ app.get('/api/users/:id', (req, res, next) => {
 });
 
 app.delete('/api/users/:id', (req, res, next) => {
+  let token = req.headers.authorization;
+  // Express headers are auto converted to lowercase
+  if (token.startsWith('bearer ')) {
+    // Remove Bearer from string
+    token = token.slice(7, token.length).trimLeft();
+  }
+  console.log('TOKEN  ', token);
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  if (!token || !decodedToken.id) {
+    return res.status(401).json({ error: 'token missing or invalid' });
+  }
+
   User.findByIdAndRemove(req.params.id)
     .then((result) => {
       console.log('User found and deleted with ID ', req.params.id, result);
@@ -55,8 +67,16 @@ app.delete('/api/users/:id', (req, res, next) => {
 
 app.put('/api/users/:id', (req, res) => {
   const { body } = req;
-  const decodedToken = jwt.verify(body.token, process.env.SECRET);
-  if (!body.token || !decodedToken.id) {
+
+  let token = req.headers.authorization;
+  // Express headers are auto converted to lowercase
+  if (token.startsWith('bearer ')) {
+    // Remove Bearer from string
+    token = token.slice(7, token.length).trimLeft();
+  }
+  console.log('TOKEN  ', token);
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  if (!token || !decodedToken.id) {
     return res.status(401).json({ error: 'token missing or invalid' });
   }
 
@@ -123,7 +143,7 @@ app.post('/api/login', async (request, response) => {
     id: user._id,
   };
 
-  const token = jwt.sign(userForToken, process.env.SECRET, {expiresIn: '12h'});
+  const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: '12h' });
   //  console.log('tokeni', token);
 
   response
