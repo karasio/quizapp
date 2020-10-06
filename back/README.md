@@ -116,6 +116,10 @@ Delete user from database
 
     **Code**: 204
     
+* **Additional information**
+
+    Authentication needed!
+        
 **Login user**
 ---
 
