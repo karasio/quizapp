@@ -167,8 +167,11 @@ export default {
         password: this.newPassword,
       });
       if (tempUser) {
-        console.log(tempUser);
-        const loggedInUser = await loginService.login(tempUser);
+        // console.log(tempUser);
+        const loggedInUser = await loginService.login({
+          username: this.newUsername,
+          password: this.newPassword,
+        });
         userService.setToken(loggedInUser.token);
         this.fillUser(loggedInUser);
         this.fillUsers(this.users.concat(tempUser));
@@ -181,6 +184,7 @@ export default {
       this.success = true;
       this.submitting = false;
       this.register = false;
+      console.log(this.register);
       this.newUsername = '';
       this.newPassword = '';
       this.newPasswordConfirm = '';
