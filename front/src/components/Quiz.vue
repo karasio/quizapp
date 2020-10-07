@@ -12,7 +12,7 @@
       </b-button>
     </div>
     <div>
-      {{ points }}
+      <h4>Current points: {{ points }}</h4>
     </div>
   </div>
 </template>
