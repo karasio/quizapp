@@ -1,6 +1,8 @@
 <template>
   <div>
-    Quiz
+    <div>
+      <h4>Current points: {{ points }}</h4>
+    </div>
     <h2 v-if="this.content.length !== 0 ">{{decodeHtml(this.content.results[0].question)}}</h2>
     <div class="btn-group-vertical">
       <b-button style="margin: 10px 0 10px 0"
@@ -10,9 +12,6 @@
                 v-on:click="handleAnswerButton">
         {{decodeHtml(answer.answer)}}
       </b-button>
-    </div>
-    <div>
-      <h4>Current points: {{ points }}</h4>
     </div>
   </div>
 </template>

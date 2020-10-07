@@ -3,8 +3,8 @@
     <div v-if="user.username !== ''">
       <div v-if="startGame">
         <div class="row" v-if="gameOn">
-          <Timer class="col-md-3"/>
-          <Quiz class="col-md-6" msg ="Quiz" />
+          <Timer class="col-3"/>
+          <Quiz class="col-6" msg ="Quiz" />
         </div>
         <div v-else>
           <h3>Game ended!</h3>
@@ -66,10 +66,7 @@ export default {
 };
 </script>
 <style>
-  @media (max-width:775px) {
-    .col-md-3 {
-      margin-left: auto;
-      margin-right:auto;
-    }
+  .row {
+    justify-content: center;
   }
 </style>

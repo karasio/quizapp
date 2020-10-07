@@ -17,18 +17,18 @@
       <a href="https://gitlab.metropolia.fi/kjc/quiz/-/blob/master/back/README.md">here</a>.
       </div>
       <div>Project done by:</div>
-      <div id="faces">
-        <div class="faceslot">
+      <div id="faces" class="row">
+        <div class="faceslot col-3">
           <img class="thumbs" src="https://avatars2.githubusercontent.com/u/45478379?s=460&u=780659dcba93aa907611cd278916a3134428036c&v=4"/>
           <br>
           <a href="https://github.com/karasio/">Katri Rasio</a>
         </div>
-        <div class="faceslot">
+        <div class="faceslot col-3">
           <img class="thumbs" src="http://placekitten.com/200/200"/>
           <br>
           <a href="https://github.com/christoffertoppe/">Christoffer Tverin Mellavuo</a>
         </div>
-        <div class="faceslot">
+        <div class="faceslot col-3">
           <img class="thumbs" src="https://avatars3.githubusercontent.com/u/28742639?s=460&u=184ca5018b1731e67213656faffedce1bde1f07f&v=4"/>
           <br>
           <a href="https://github.com/jvaarala/">Jesse Väärälä</a>
@@ -85,19 +85,7 @@ export default {
 </script>
 
 <style>
-  #removedatabutton {
-    margin-bottom: 0.5rem;
-  }
-  .thumbs {
-    width: 10rem;
-  }
-  #faces {
-    display: flex;
-    padding: 1rem 1rem 1rem 1rem;
-    width: 100%;
-    text-align: center;
-  }
-  .faceslot {
-    width: 33%;
-  }
+.faceslot img {
+  width: 100%;
+}
 </style>

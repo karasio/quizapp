@@ -40,7 +40,7 @@ const COLOR_CODES = {
   },
 };
 
-const TIME_LIMIT = 60;
+const TIME_LIMIT = 600;
 
 export default {
   data() {
@@ -163,8 +163,8 @@ export default {
 
     &__label {
       position: absolute;
-      width: 300px;
-      height: 300px;
+      width: 280px;
+      height: 280px;
       top: 0;
       display: flex;
       align-items: center;
